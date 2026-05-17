@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Search, Heart, FolderPlus, FilterX } from "lucide-react";
+import { Search, Heart, FolderPlus, FilterX, BookOpen } from "lucide-react";
 import Link from "next/link";
 
 interface EmptyStateProps {
-  type: "search" | "favorites" | "collection" | "filter-empty";
+  type: "search" | "favorites" | "collection" | "filter-empty" | "anime-detail";
   message?: string;
   actionLabel?: string;
   actionHref?: string;
@@ -41,6 +41,12 @@ export function EmptyState({
       icon: FilterX,
       message: "No anime match your filters",
       actionLabel: "Clear Filters",
+    },
+    "anime-detail": {
+      icon: BookOpen,
+      message: "Select an anime to view details",
+      actionLabel: "Browse Anime",
+      actionHref: "/search",
     },
   };
 

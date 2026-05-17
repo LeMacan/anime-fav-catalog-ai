@@ -108,7 +108,7 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
       {selectEnabled ? (
         cardContent
       ) : (
-        <Link href={`/anime/${anime.id}`}>{cardContent}</Link>
+        <Link href={`/anime?id=${anime.id}`}>{cardContent}</Link>
       )}
     </motion.div>
   );

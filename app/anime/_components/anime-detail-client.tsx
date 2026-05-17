@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import { AnimeHero } from "@/components/anime/anime-hero";
 import { AnimeInfo } from "@/components/anime/anime-info";
 import { AnimeGenres } from "@/components/anime/anime-genres";
@@ -18,16 +19,33 @@ import { useMoodsStore } from "@/lib/store/moods-store";
 import { useNotesStore } from "@/lib/store/notes-store";
 import { getAnimeDetail } from "@/lib/anilist/client";
 import { useEffect } from "react";
-import AnimeDetailLoading from "./loading";
+import AnimeDetailLoading from "../loading";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/shared/empty-state";
 
-interface AnimeDetailClientProps {
-  id: string;
-}
+export default function AnimeDetailClient() {
+  const searchParams = useSearchParams();
+  const idParam = searchParams.get("id");
 
-export default function AnimeDetailClient({ id }: AnimeDetailClientProps) {
-  const animeId = Number(id);
+  // Empty state when no ID provided
+  if (!idParam || idParam.trim() === "") {
+    return <EmptyState type="anime-detail" />;
+  }
+
+  const animeId = Number(idParam);
+
+  // Invalid ID (non-numeric)
+  if (isNaN(animeId)) {
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
+        <p className="text-lg text-destructive">Invalid anime ID</p>
+        <Link href="/search">
+          <Button variant="outline">Back to search</Button>
+        </Link>
+      </div>
+    );
+  }
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["anime-detail", animeId],
