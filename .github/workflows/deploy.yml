@@ -31,7 +31,12 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Create .env.local
+        run: |
+          echo 'DATABASE_URL="postgresql://placeholder"' > .env.local
+          echo 'NEXT_PUBLIC_ENABLE_AI_SUGGESTIONS="true"' >> .env.local
 
       - name: Build
         run: npm run build
