@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,6 @@ const ANIME_FORMATS = [
 ] as const;
 
 export function FilterBar() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -59,11 +58,13 @@ export function FilterBar() {
       if (format) params.set("format", format);
 
       const queryString = params.toString();
-      router.push(queryString ? `?${queryString}` : "/favorites", { scroll: false });
+      // Use replaceState for static export compatibility (router.push doesn't work)
+      const newUrl = queryString ? `?${queryString}` : window.location.pathname;
+      window.history.replaceState(null, "", newUrl);
     }, 300);
 
     setDebounceTimer(timer);
-  }, [tagMode, tags, moods, ratingMin, ratingMax, format, router, debounceTimer]);
+  }, [tagMode, tags, moods, ratingMin, ratingMax, format, debounceTimer]);
 
   // Auto-update on state change
   useEffect(() => {
