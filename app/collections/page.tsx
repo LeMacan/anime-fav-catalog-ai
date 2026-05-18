@@ -13,8 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { CollectionGrid } from "@/components/collections/collection-grid";
 import { CollectionCard } from "@/components/collections/collection-card";
+import { FavoritesCollectionCard } from "@/components/collections/favorites-collection-card";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useCollectionsStore } from "@/lib/store/collections-store";
+import { useFavoritesStore } from "@/lib/store/favorites-store";
 import { useShallow } from "zustand/shallow";
 
 export default function CollectionsPage() {
@@ -26,6 +28,9 @@ export default function CollectionsPage() {
   const addCollection = useCollectionsStore((s) => s.addCollection);
   const updateCollection = useCollectionsStore((s) => s.updateCollection);
   const deleteCollection = useCollectionsStore((s) => s.deleteCollection);
+
+  const favoritesList = useFavoritesStore((s) => s.getFavoritesList());
+  const favoritesCount = favoritesList.length;
 
   const handleCreate = () => {
     if (!newName.trim()) return;
@@ -94,15 +99,16 @@ export default function CollectionsPage() {
         </Dialog>
       </div>
 
-      {collections.length === 0 ? (
+      {collections.length === 0 && favoritesCount === 0 ? (
         <EmptyState type="collection" message="No collections yet. Create your first one!" />
       ) : (
         <CollectionGrid>
+          <FavoritesCollectionCard count={favoritesCount} index={0} />
           {collections.map((col, i) => (
             <CollectionCard
               key={col.id}
               collection={col}
-              index={i}
+              index={i + 1}
               onRename={handleRename}
               onDelete={handleDelete}
             />

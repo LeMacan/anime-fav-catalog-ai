@@ -35,6 +35,43 @@ query ($search: String, $page: Int, $perPage: Int) {
 }
 `;
 
+export const TRENDING_QUERY = `
+query ($page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    media(type: ANIME, sort: TRENDING_DESC) {
+      id
+      title {
+        romaji
+        english
+        native
+      }
+      coverImage {
+        large
+        extraLarge
+      }
+      averageScore
+      meanScore
+      genres
+      episodes
+      format
+      status
+      season
+      seasonYear
+      startDate {
+        year
+        month
+        day
+      }
+    }
+  }
+}
+`;
+
 export const DETAIL_QUERY = `
 query ($id: Int) {
   Media(id: $id, type: ANIME) {

@@ -10,7 +10,7 @@ import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Sparkles } from "lucide-react";
-import { searchAnime } from "@/lib/anilist/client";
+import { searchAnime, getTrendingAnime } from "@/lib/anilist/client";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -26,6 +26,19 @@ export default function SearchPage() {
     placeholderData: (prev) => prev,
   });
 
+  // Trending query - only runs when no search query
+  const {
+    data: trendingData,
+    isLoading: isTrendingLoading,
+    isError: isTrendingError,
+    error: trendingError,
+    refetch: refetchTrending,
+  } = useQuery({
+    queryKey: ["anime-trending"],
+    queryFn: async () => await getTrendingAnime(1, 24),
+    enabled: !query.trim(),
+  });
+
   const handleSearch = useCallback((newQuery: string) => {
     setQuery(newQuery);
     setPage(1);
@@ -33,6 +46,7 @@ export default function SearchPage() {
 
   const results = data?.Page?.media ?? [];
   const pageInfo = data?.Page?.pageInfo;
+  const trendingResults = trendingData?.Page?.media ?? [];
 
   return (
     <motion.div
@@ -49,20 +63,36 @@ export default function SearchPage() {
 
       <SearchBar onSearch={handleSearch} />
 
-      {!query.trim() && !isLoading && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center gap-4 py-16"
-        >
-          <Sparkles className="h-12 w-12 text-primary/50" />
-          <p className="text-lg text-muted-foreground">
-            Type an anime title to start searching
-          </p>
-        </motion.div>
+      {!query.trim() && !isTrendingLoading && (
+        <>
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-semibold">Trending Now</h2>
+          </div>
+          {isTrendingError ? (
+            <div className="flex flex-col items-center gap-4 py-16">
+              <p className="text-destructive">
+                {trendingError instanceof Error
+                  ? trendingError.message
+                  : "Failed to load trending"}
+              </p>
+              <Button variant="outline" onClick={() => refetchTrending()}>
+                Retry
+              </Button>
+            </div>
+          ) : (
+            <AnimeGrid>
+              {trendingResults.map((anime: any, i: number) => (
+                <AnimeCard key={anime.id} anime={anime} index={i} />
+              ))}
+            </AnimeGrid>
+          )}
+        </>
       )}
 
-      {isLoading && <LoadingSkeleton count={12} />}
+      {isTrendingLoading && !query.trim() && <LoadingSkeleton count={24} />}
+
+      {query.trim() && isLoading && <LoadingSkeleton count={24} />}
 
       {isError && (
         <div className="flex flex-col items-center gap-4 py-16">
