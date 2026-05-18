@@ -29,8 +29,8 @@ export default function CollectionsPage() {
   const updateCollection = useCollectionsStore((s) => s.updateCollection);
   const deleteCollection = useCollectionsStore((s) => s.deleteCollection);
 
-  const favoritesList = useFavoritesStore((s) => s.getFavoritesList());
-  const favoritesCount = favoritesList.length;
+  const favorites = useFavoritesStore(useShallow((s) => s.favorites));
+  const favoritesCount = Object.keys(favorites).length;
 
   const handleCreate = () => {
     if (!newName.trim()) return;
