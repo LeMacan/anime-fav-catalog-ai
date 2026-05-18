@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, Heart, FolderOpen, Sparkles, Wand2, BarChart3, Settings, TrendingUp } from "lucide-react";
+import { Search, Heart, FolderOpen, Grid3X3, Sparkles, Wand2, BarChart3, Settings, TrendingUp } from "lucide-react";
 import { useFavoritesStore } from "@/lib/store/favorites-store";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/search", label: "Search", icon: Search },
   { href: "/favorites", label: "Favorites", icon: Heart },
   { href: "/collections", label: "Collections", icon: FolderOpen },
+  { href: "/genres", label: "Genres", icon: Grid3X3 },
   { href: "/recommendations", label: "For You", icon: Wand2 },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { AnimeGenres } from "@/components/anime/anime-genres";
 import { useSelectModeStore } from "@/lib/store/select-mode-store";
 import type { AnimeSearchResult } from "@/lib/anilist/types";
 import Link from "next/link";
@@ -94,6 +95,11 @@ export function AnimeCard({ anime, index = 0 }: AnimeCardProps) {
             </>
           )}
         </div>
+        {anime.genres && anime.genres.length > 0 && (
+          <div className="mt-2">
+            <AnimeGenres genres={anime.genres} maxItems={3} />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
